@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser
+from .models import CustomUser, Lead
 from django.contrib.auth.password_validation import validate_password
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -31,3 +31,9 @@ class RegisterSerializer(serializers.ModelSerializer):
             'name':user.name,
             'token': token_data
         }
+    
+
+class LeadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Lead
+        fields = '__all__'
