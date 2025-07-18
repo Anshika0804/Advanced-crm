@@ -1,9 +1,8 @@
 from rest_framework import serializers
-from .models import CustomUser, Lead
+from .models import CustomUser
 from django.contrib.auth.password_validation import validate_password
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
 import re
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -68,7 +67,7 @@ class UpdateProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['name']
-        
+
     def validate_name(self, value):
         if not re.match(r'^[A-Za-z\s]+$', value):
             raise serializers.ValidationError("Name should contain only letters and spaces.")
@@ -76,18 +75,3 @@ class UpdateProfileSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Name must be at least 3 characters long.")
         return value
         
-
-class LeadSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Lead
-        fields = '__all__'
-
-class LeadListCreateView(generics.ListCreateAPIView):
-    serializer_class = LeadSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        return Lead.objects.filter(user=self.request.user)
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
