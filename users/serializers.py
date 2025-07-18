@@ -58,7 +58,24 @@ class RegisterSerializer(serializers.ModelSerializer):
             'name':user.name,
             'token': token_data
         }
-    
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['name', 'email']
+
+class UpdateProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['name']
+        
+    def validate_name(self, value):
+        if not re.match(r'^[A-Za-z\s]+$', value):
+            raise serializers.ValidationError("Name should contain only letters and spaces.")
+        if len(value.strip()) < 3:
+            raise serializers.ValidationError("Name must be at least 3 characters long.")
+        return value
+        
 
 class LeadSerializer(serializers.ModelSerializer):
     class Meta:

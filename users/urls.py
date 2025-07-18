@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import RegisterView, LeadListCreateView, LeadUpdateRetrieveDestroyView, ManagerOnlyView
+from .views import RegisterView, LeadListCreateView, LeadUpdateRetrieveDestroyView, ManagerOnlyView, UserProfileView, UpdateProfileView
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -12,4 +12,6 @@ urlpatterns = [
     path('leads/', LeadListCreateView.as_view(), name='lead-list-create'),
     path('leads/<int:pk>/', LeadUpdateRetrieveDestroyView.as_view(), name='lead-detail'),
     path('manager-only/', ManagerOnlyView.as_view(), name='manager-only'),
+    path('profile/', UserProfileView.as_view(), name='user_profile'),
+    path('profile/update/', UpdateProfileView.as_view(), name='update-profile'),
 ]

@@ -3,7 +3,7 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
-from .serializers import RegisterSerializer, LeadSerializer
+from .serializers import RegisterSerializer, LeadSerializer, UserProfileSerializer, UpdateProfileSerializer
 from .models import CustomUser, Lead
 from .permissions import IsManager
 
@@ -32,6 +32,23 @@ class RegisterView(generics.CreateAPIView):
         }, status=status.HTTP_201_CREATED)
 
     
+class UserProfileView(generics.RetrieveAPIView):
+    serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+    
+class UpdateProfileView(generics.UpdateAPIView):
+    serializer_class = UpdateProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+    
+    def update(self, request, *args, **kwargs):
+        print("Update request data:", request.data)
+        return super().update(request, *args, **kwargs)
 
 class LeadListCreateView(generics.ListCreateAPIView):
     queryset = Lead.objects.all()
@@ -48,6 +65,8 @@ class ManagerOnlyView(APIView):
     permission_classes = [IsAuthenticated, IsManager]
     def get(self, request):        
         return Response({"message": "Hello Manager!"})
+    
+
 
 
     
