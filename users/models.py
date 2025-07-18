@@ -18,6 +18,7 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
+    team = models.ForeignKey('teams.Team', null=True, blank=True, on_delete=models.SET_NULL)
     email = models.EmailField(unique=True)
     name = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
@@ -33,6 +34,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 class Lead(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     STATUS_CHOICES = [
         ('New', 'New'), 
         ('Contacted', 'Contacted'),
