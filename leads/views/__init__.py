@@ -2,10 +2,16 @@ from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from .serializers import LeadSerializer
-from .models import Lead
+from leads.serializers import LeadSerializer
+
+from leads.models import Lead
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+
+from .ticket_views import TicketViewSet
+from .note_views import NoteViewSet
+from .attachment_views import AttachmentViewSet
+from .campaign_views import CampaignViewSet
 
 # Create your views here.
 class LeadListCreateView(generics.ListCreateAPIView):

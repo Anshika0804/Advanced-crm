@@ -1,5 +1,10 @@
 from django.db import models
 from users.models import CustomUser
+from django.conf import settings
+from .ticket import Ticket
+from .attachment import Attachment
+from .campaign import Campaign
+from .note import Note
 
 # Create your models here.
 class Lead(models.Model):
@@ -20,13 +25,3 @@ class Lead(models.Model):
     def __str__(self):
         return self.name
     
-
-class Contact(models.Model):
-    name = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
-    phone = models.CharField(max_length=15, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    notes = models.TextField(blank=True, null=True)
-
-    def __str__(self):
-        return self.name
