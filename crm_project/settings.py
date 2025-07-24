@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "users",
     "teams",
     "leads",
+    "contacts",
     "rest_framework",
     "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
