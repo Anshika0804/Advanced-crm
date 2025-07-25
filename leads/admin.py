@@ -3,10 +3,27 @@ from .models import Lead
 from contacts.models import Contact
 from .models import Ticket, Attachment, Campaign, Note 
 
-admin.site.register(Ticket)
-admin.site.register(Attachment)
-admin.site.register(Campaign)
-admin.site.register(Note)
+# admin.site.register(Ticket)
+# admin.site.register(Attachment)
+# admin.site.register(Campaign)
+# admin.site.register(Note)
+
+@admin.register(Ticket)
+class TicketAdmin(admin.ModelAdmin):
+    list_display = ('id', 'title', 'description') 
+
+@admin.register(Campaign)
+class CampaignAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'start_date', 'end_date')
+
+@admin.register(Note)
+class NoteAdmin(admin.ModelAdmin):
+    list_display = ('id', 'content', 'author')
+
+@admin.register(Attachment)
+class AttachmentAdmin(admin.ModelAdmin):
+    list_display = ('id', 'file', 'uploaded_at', 'ticket') 
+
 
 class ContactInline(admin.TabularInline):
     model = Contact
@@ -26,7 +43,7 @@ class LeadAdmin(admin.ModelAdmin):
     search_fields = ('name', 'email')
     list_filter = ['created_at']
     inlines = [ContactInline]
-    
+
     def get_user_name(self, obj):
         return obj.user.name if obj.user else "-"
     get_user_name.short_description = 'Assigned To'
