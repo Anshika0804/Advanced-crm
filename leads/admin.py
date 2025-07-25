@@ -22,20 +22,44 @@ class ContactInline(admin.TabularInline):
 
 @admin.register(Lead)
 class LeadAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'email', 'created_at')
+    list_display = ('id', 'name', 'email', 'created_at', 'get_user_name')
     search_fields = ('name', 'email')
     list_filter = ['created_at']
     inlines = [ContactInline]
+    
+    def get_user_name(self, obj):
+        return obj.user.name if obj.user else "-"
+    get_user_name.short_description = 'Assigned To'
+
+    # def get_queryset(self, request):
+    #     print("Logged in as:", request.user.email)
+    #     print("Groups:", list(request.user.groups.values_list('name', flat=True)))
+    #     qs = super().get_queryset(request)
+    #     if request.user.groups.filter(name='agent').exists():
+    #         return qs.filter(user=request.user)
+    #     elif request.user.groups.filter(name='manager').exists():
+    #         return qs
+    #     elif request.user.groups.filter(name='admin').exists() or request.user.is_superuser:
+    #         return qs
+    #     return qs.none()
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-        if request.user.groups.filter(name='agent').exists():
+        print("Logged in as:", request.user.email)
+        print("User groups:", list(request.user.groups.values_list('name', flat=True)))
+        
+        if request.user.groups.filter(name__iexact='agent').exists():
             return qs.filter(user=request.user)
-        elif request.user.groups.filter(name='manager').exists():
-            return qs  # Managers can see all
-        elif request.user.groups.filter(name='admin').exists() or request.user.is_superuser:
+        elif request.user.groups.filter(name__iexact='manager').exists():
             return qs
-        return qs.none()
+        elif request.user.groups.filter(name__iexact='admin').exists() or request.user.is_superuser:
+            return qs
+        else:
+            qs = qs.none()
+        
+        print("Queryset for current user:", qs)
+        return qs
+
 
     def has_change_permission(self, request, obj=None):
         if request.user.groups.filter(name='agent').exists():
