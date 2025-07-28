@@ -99,16 +99,21 @@ WSGI_APPLICATION = "crm_project.wsgi.application"
 
 DATABASES = {
     "default": {
-        # "ENGINE": "django.db.backends.sqlite3",
-        # "NAME": BASE_DIR / "db.sqlite3",
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'crmdb',
-        'USER': 'crmuser',
-        'PASSWORD': 'Anshika_20',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'advanced_crmdb',
+#         'USER': 'crmadmin',
+#         'PASSWORD': 'crm@12345',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
 
 
 # Password validation
@@ -153,3 +158,12 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "users.CustomUser"
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = 'anshikacoder10@gmail.com'
+EMAIL_HOST_PASSWORD = 'luym ryvy ujcf qidw'
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

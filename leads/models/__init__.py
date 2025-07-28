@@ -22,6 +22,15 @@ class Lead(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    assigned_to = models.ForeignKey(
+        CustomUser,
+        related_name='assigned_leads',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL
+    )
+
+
     def __str__(self):
         return self.name
     

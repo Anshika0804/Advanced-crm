@@ -3,11 +3,6 @@ from .models import Lead
 from contacts.models import Contact
 from .models import Ticket, Attachment, Campaign, Note 
 
-# admin.site.register(Ticket)
-# admin.site.register(Attachment)
-# admin.site.register(Campaign)
-# admin.site.register(Note)
-
 @admin.register(Ticket)
 class TicketAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'description') 

@@ -4,31 +4,39 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from rest_framework.views import APIView
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.core.mail import send_mail
+from django.contrib.auth import get_user_model
+
+from django.core.mail import send_mail
+from django.http import JsonResponse
+from django.views import View
+
+
 from .serializers import RegisterSerializer, UserProfileSerializer, UpdateProfileSerializer
-# from .models import CustomUser
-from .permissions import IsManager
+from permissions.permissions import IsManagerOrAdmin
 
 # Create your views here.
 class RegisterView(generics.CreateAPIView):
-    # queryset = CustomUser.objects.all()
     serializer_class = RegisterSerializer
-    # permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
 
-        if request.data.get('is_manager') == True or request.data.get('is_manager') == 'true':
-            try:
-                group = Group.objects.get(name='Manager')
-                user.groups.add(group)
-            except Group.DoesNotExist:
-                return Response({'error': 'Manager Group does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+        # Assign role if provided in request
+        role = request.data.get('role')
+        if role in ['manager', 'admin', 'agent', 'team_lead', 'custom']:
+            user.role = role
+            user.save()
 
         return Response({
             "email": user.email,
             "name": user.name,
+            "role": user.role,
             "message": "User registered successfully"
         }, status=status.HTTP_201_CREATED)
 
@@ -65,12 +73,72 @@ class LogoutView(APIView):
         except TokenError:
             return Response({"error": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
 
-class ManagerOnlyView(APIView):
-    permission_classes = [IsAuthenticated, IsManager]
-    def get(self, request):        
-        return Response({"message": "Hello Manager!"})
-    
+class ProtectedRoleView(APIView):
+    permission_classes = [IsAuthenticated, IsManagerOrAdmin]
+
+    def get(self, request):
+        return Response({"message": f"Hello {request.user.role.title()}!"})
 
 
 
-    
+
+class ForgotPasswordView(APIView):
+    def post(self, request):
+        email = request.data.get("email")
+        if not email :
+            return Response({"error": "Email is required."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        User = get_user_model()
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return Response({"error": "User with this email does not exist."}, status=status.HTTP_404_NOT_FOUND)
+        
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        token = PasswordResetTokenGenerator().make_token(user)
+        reset_link = f"http://localhost:3000/reset-password/{uid}/{token}/"
+
+        send_mail(
+            "Reset Your Password",
+            f"Click the link to reset your password: {reset_link}",
+            "noreply@crm.com",
+            [email],
+            fail_silently=False,
+        )
+
+        return Response({"message": "Password reset link sent to your email."}, status=status.HTTP_200_OK)
+
+
+class ResetPasswordView(APIView):
+    def post(self, request, uidb64, token):
+        password = request.data.get("password")
+        if not password:
+            return Response({"error": "Password is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        User = get_user_model()
+        try:
+            uid = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            return Response({"error": "Invalid reset link."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not PasswordResetTokenGenerator().check_token(user, token):
+            return Response({"error": "Invalid or expired token."}, status=status.HTTP_400_BAD_REQUEST)
+
+        user.set_password(password)
+        user.save()
+        return Response({"message": "Password reset successful."}, status=status.HTTP_200_OK)
+
+
+class SendTestEmailView(View):
+    def get(self, request):
+        subject = 'Test Email from Django'
+        message = 'This is a test email sent from your Django project using Gmail SMTP.'
+        from_email = 'anshikacoder10@gmail.com'  # Replace with your actual email
+        recipient_list = ['skrcoder07@gmail.com']  # Replace with the email you want to receive the test on
+
+        try:
+            send_mail(subject, message, from_email, recipient_list)
+            return JsonResponse({'success': 'Email sent successfully'})
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)

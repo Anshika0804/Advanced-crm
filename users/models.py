@@ -12,15 +12,24 @@ class CustomUserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password=None, **extra_fields):
-        extra_fields.setdefault("is_staff", True)
-        extra_fields.setdefault("is_superuser", True)
-
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
         return self.create_user(email, password, **extra_fields)
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
-    team = models.ForeignKey('teams.Team', null=True, blank=True, on_delete=models.SET_NULL)
+    ROLE_CHOICES = [
+        ('admin', 'Admin'),
+        ('manager', 'Manager'),
+        ('team_lead', 'Team Lead'),
+        ('agent', 'Agent'),
+        ('custom', 'Custom User'),
+    ]
+
     email = models.EmailField(unique=True)
     name = models.CharField(max_length=255)
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='custom')
+    team = models.ForeignKey('teams.Team', null=True, blank=True, on_delete=models.SET_NULL)
+
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
@@ -31,5 +40,4 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ['name']
 
     def __str__(self):
-        return self.name
-
+        return f"{self.name} ({self.role})"
