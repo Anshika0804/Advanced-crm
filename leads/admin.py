@@ -34,14 +34,15 @@ class ContactInline(admin.TabularInline):
 
 @admin.register(Lead)
 class LeadAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'email', 'created_at', 'get_user_name')
+    list_display = ('id', 'name', 'email', 'created_at', 'assigned_to', 'get_user_name')
     search_fields = ('name', 'email')
     list_filter = ['created_at']
     inlines = [ContactInline]
 
+
     def get_user_name(self, obj):
         return obj.user.name if obj.user else "-"
-    get_user_name.short_description = 'Assigned To'
+    get_user_name.short_description = 'Assigned by'
 
     # def get_queryset(self, request):
     #     print("Logged in as:", request.user.email)

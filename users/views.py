@@ -13,12 +13,16 @@ from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
 from django.http import JsonResponse
 from django.views import View
+from .models import CustomUser
+from .serializers import UserSerializer
 
 
 from .serializers import RegisterSerializer, UserProfileSerializer, UpdateProfileSerializer
 from permissions.permissions import IsManagerOrAdmin
 
 # Create your views here.
+
+
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
 
@@ -33,7 +37,7 @@ class RegisterView(generics.CreateAPIView):
             user.role = role
             user.save()
 
-        # ✅ Generate tokens
+        # Generate tokens
         refresh = RefreshToken.for_user(user)
         token_data = {
             'refresh': str(refresh),
@@ -148,3 +152,22 @@ class SendTestEmailView(View):
             return JsonResponse({'success': 'Email sent successfully'})
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
+        
+
+
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth import get_user_model
+from users.serializers import UserSerializer  # make sure this serializer exists
+
+User = get_user_model()
+
+class UserListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        users = User.objects.all()
+        serializer = UserSerializer(users, many=True)
+        return Response(serializer.data)

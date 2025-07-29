@@ -8,7 +8,7 @@ from rest_framework_simplejwt.views import (
 
 from .views import (
     RegisterView, UserProfileView, UpdateProfileView, LogoutView,
-    ForgotPasswordView, ResetPasswordView, SendTestEmailView
+    ForgotPasswordView, ResetPasswordView, SendTestEmailView, UserListView
 )
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
@@ -19,9 +19,12 @@ urlpatterns = [
     path('profile/', UserProfileView.as_view(), name='user_profile'),
     path('profile/update/', UpdateProfileView.as_view(), name='update-profile'),
     path('logout/', LogoutView.as_view(), name='logout'),
-
     
     path('forgot-password/', ForgotPasswordView.as_view(), name='forgot-password'),
     path('reset-password/', ResetPasswordView.as_view(), name='reset-password'),
     path('send-test-email/', SendTestEmailView.as_view(), name='send-test-email'),
+
+
+    path("list/", UserListView.as_view(), name="user-list"),
+
 ]
