@@ -27,16 +27,24 @@ class RegisterView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
 
-        # Assign role if provided in request
+        # Assign role if provided
         role = request.data.get('role')
         if role in ['manager', 'admin', 'agent', 'team_lead', 'custom']:
             user.role = role
             user.save()
 
+        # ✅ Generate tokens
+        refresh = RefreshToken.for_user(user)
+        token_data = {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }
+
         return Response({
             "email": user.email,
             "name": user.name,
             "role": user.role,
+            "token": token_data,
             "message": "User registered successfully"
         }, status=status.HTTP_201_CREATED)
 

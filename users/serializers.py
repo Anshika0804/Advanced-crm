@@ -47,19 +47,8 @@ class RegisterSerializer(serializers.ModelSerializer):
         password = validated_data.pop('password')
         validated_data.pop('password2')
         user = CustomUser.objects.create_user(password=password, **validated_data)
+        return user  # Return the user instance only
 
-        refresh = RefreshToken.for_user(user)
-        token_data = {
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
-        }
-
-        return {
-            'email': user.email,
-            'name': user.name,
-            'role': user.role,
-            'token': token_data
-        }
 
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
