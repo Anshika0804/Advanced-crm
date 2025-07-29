@@ -88,8 +88,6 @@ class ProtectedRoleView(APIView):
         return Response({"message": f"Hello {request.user.role.title()}!"})
 
 
-
-
 class ForgotPasswordView(APIView):
     def post(self, request):
         email = request.data.get("email")
