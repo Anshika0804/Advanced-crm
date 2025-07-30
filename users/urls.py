@@ -21,9 +21,8 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='logout'),
     
     path('forgot-password/', ForgotPasswordView.as_view(), name='forgot-password'),
-    path('reset-password/', ResetPasswordView.as_view(), name='reset-password'),
+    path("reset-password/<uidb64>/<token>/", ResetPasswordView.as_view(), name="reset-password"),
     path('send-test-email/', SendTestEmailView.as_view(), name='send-test-email'),
-
 
     path("list/", UserListView.as_view(), name="user-list"),
 

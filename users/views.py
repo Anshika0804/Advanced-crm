@@ -19,9 +19,10 @@ from .serializers import UserSerializer
 
 from .serializers import RegisterSerializer, UserProfileSerializer, UpdateProfileSerializer
 from permissions.permissions import IsManagerOrAdmin
+from rest_framework.permissions import AllowAny
+
 
 # Create your views here.
-
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
@@ -93,8 +94,10 @@ class ProtectedRoleView(APIView):
 
 
 class ForgotPasswordView(APIView):
+    permission_classes = [AllowAny]
     def post(self, request):
-        email = request.data.get("email")
+        # email = request.data.get("email")
+        email = "anshikarai0804@gmail.com"
         if not email :
             return Response({"error": "Email is required."}, status=status.HTTP_400_BAD_REQUEST)
         
@@ -111,7 +114,7 @@ class ForgotPasswordView(APIView):
         send_mail(
             "Reset Your Password",
             f"Click the link to reset your password: {reset_link}",
-            "noreply@crm.com",
+            "anshikacoder10@gmail.com",
             [email],
             fail_silently=False,
         )
@@ -120,6 +123,7 @@ class ForgotPasswordView(APIView):
 
 
 class ResetPasswordView(APIView):
+    permission_classes = [AllowAny]
     def post(self, request, uidb64, token):
         password = request.data.get("password")
         if not password:
@@ -144,8 +148,8 @@ class SendTestEmailView(View):
     def get(self, request):
         subject = 'Test Email from Django'
         message = 'This is a test email sent from your Django project using Gmail SMTP.'
-        from_email = 'anshikacoder10@gmail.com'  # Replace with your actual email
-        recipient_list = ['skrcoder07@gmail.com']  # Replace with the email you want to receive the test on
+        from_email = 'anshikacoder10@gmail.com'  
+        recipient_list = ['anshikarai0804@gmail.com']  
 
         try:
             send_mail(subject, message, from_email, recipient_list)
