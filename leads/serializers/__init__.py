@@ -13,16 +13,32 @@ __all__ = [
     "CampaignSerializer",
 ]
 
+# class LeadSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Lead
+#         fields = '__all__'
+
+#     def get_user(self, obj):
+#         return obj.user.email if obj.user else None
+
+#     def get_assigned_to(self, obj):
+#         return obj.assigned_to.email if obj.assigned_to else None
+
 class LeadSerializer(serializers.ModelSerializer):
+    user_email = serializers.SerializerMethodField()
+    assigned_to_email = serializers.SerializerMethodField()
+
     class Meta:
         model = Lead
-        fields = '__all__'
+        fields = '__all__'  # Includes user and assigned_to IDs
+        read_only_fields = ['user']  # user will be set from request.user
 
-    def get_user(self, obj):
+    def get_user_email(self, obj):
         return obj.user.email if obj.user else None
 
-    def get_assigned_to(self, obj):
+    def get_assigned_to_email(self, obj):
         return obj.assigned_to.email if obj.assigned_to else None
+
 
 
 # FRONTEND.....
