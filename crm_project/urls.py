@@ -33,6 +33,7 @@ urlpatterns = [
     path("api/users/", include("users.urls")),       # User auth (e.g., login, signup)
     path("api/leads/", include("leads.urls")),       # Lead API endpoints
     path("api/teams/", include("teams.urls")),       # Team management
+    path("api/contacts/", include("contacts.urls")),
 
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),

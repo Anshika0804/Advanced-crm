@@ -1,103 +1,83 @@
-# from django.shortcuts import render
 # from rest_framework import generics
 # from rest_framework.permissions import IsAuthenticated
-# from rest_framework.views import APIView
-# from rest_framework.response import Response
 # from leads.serializers import LeadSerializer
-
 # from leads.models import Lead
-# from django.urls import reverse_lazy
-# from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 # from permissions.permissions import (
-#     IsAdmin,
-#     IsManager,
-#     IsTeamLead,
-#     IsAgent,
-#     IsCustomUser,
-#     IsManagerOrAdmin,
-#     IsTeamLeadOrAbove,
 #     IsAgentOrAbove,
+#     IsTeamLeadOrAbove,
 # )
+# from django.core.exceptions import ValidationError
 
-# from .ticket_views import TicketViewSet
-# from .note_views import NoteViewSet
-# from .attachment_views import AttachmentViewSet
-# from .campaign_views import CampaignViewSet
-
-
-
-# # Create your views here.
 # class LeadListCreateView(generics.ListCreateAPIView):
 #     serializer_class = LeadSerializer
 #     permission_classes = [IsAgentOrAbove]
 
 #     def get_queryset(self):
+#         print("User:", self.request.user)
+#         print("Role:", self.request.user.role)
 #         user = self.request.user
-#         #Agents can only view their own lead...
-#         if user.role == "Agent":
+#         if user.role == "admin":
+#             return Lead.objects.all()
+#         elif user.role in ["manager", "team_lead"]:
+#             return Lead.objects.filter(team=user.team)
+#         elif user.role == "agent":
 #             return Lead.objects.filter(user=user)
-#         elif user.role in ["Manager", "Admin", "TeamLead"]:
-#             return Lead.objects.all() # Managers/Admins/TeamLeads can see all
-#         return Lead.objects.none() 
+#         return Lead.objects.none()
+
     
 #     def perform_create(self, serializer):
-#         serializer.save(user=self.request.user)
+#         user = self.request.user
+#         if not user.role:
+#             raise ValidationError("User has no role assigned.")
+#         serializer.save(user=user, team=user.team)
+
 
 # class LeadUpdateRetrieveDestroyView(generics.RetrieveUpdateDestroyAPIView):
 #     serializer_class = LeadSerializer
-#     permission_classes = [IsTeamLeadOrAbove]  # Only TeamLead or above can update/delete
+#     permission_classes = [IsTeamLeadOrAbove]
 
 #     def get_queryset(self):
 #         user = self.request.user
-#         if user.role in ["Manager", "Admin", "TeamLead"]:
+#         print("User (detail view):", user)
+#         print("Role (detail view):", user.role)
+
+#         if user.role == "agent":
+#             return Lead.objects.filter(user=user)
+#         elif user.role in ["manager", "admin", "team_lead"]:
 #             return Lead.objects.all()
 #         return Lead.objects.none()
+    
 
-# class LeadListView(ListView):
-#     model = Lead
-#     # template_name = "leads/lead_list.html"
+# #FRONTEND
 
-# class LeadDetailView(DetailView):
-#     model = Lead
-#     # template_name = "leads/lead_detail.html"
-
-# class LeadCreateView(CreateView):
-#     model = Lead
-#     # template_name = "leads/lead_form.html"
-#     fields = ['name', 'email', 'phone_number']
-#     # template_name = "leads/lead_form.html"
-#     success_url = reverse_lazy('lead-list')
-
-#     def form_valid(self, form):
-#         form.instance.user = self.request.user 
-#         return super().form_valid(form)
-
-# class LeadUpdateView(UpdateView):
-#     model = Lead
-#     fields = ['name', 'email', 'phone_number']
-#     template_name = "leads/lead_form.html"
-#     success_url = reverse_lazy('lead-list')
-
-# class LeadDeleteView(DeleteView):
-#     model = Lead
-#     # template_name = "leads/lead_confirm_delete.html"
-#     success_url = reverse_lazy('lead-list')
+# from rest_framework.views import APIView
+# from rest_framework.response import Response
+# from rest_framework.permissions import IsAuthenticated
+# from leads.models import Lead
+# from leads.serializers import LeadExtendedSerializer
 
 
-#     def perform_create(self, serializer):
-#         serializer.save(user=self.request.user)
+# class LeadExtendedListView(APIView):
+#     permission_classes = [IsAuthenticated]
 
-# class LeadListCreateView(generics.ListCreateAPIView):
-#     serializer_class = LeadSerializer
-#     permission_classes = [IsAuthenticated]  # ⛔️ TEMP for debugging
+#     def get(self, request):
+#         # leads = Lead.objects.all()
+#         user = request.user
+#         if user.role == "admin":
+#             leads = Lead.objects.all()
+#         elif user.role in ["manager", "team_lead"]:
+#             leads = Lead.objects.filter(team=user.team)
+#         elif user.role == "agent":
+#             leads = Lead.objects.filter(user=user)
+#         else:
+#             leads = Lead.objects.none()
+#         serializer = LeadExtendedSerializer(leads, many=True)
+#         return Response(serializer.data)
+    
 
-#     def get_queryset(self):
-#         return Lead.objects.all()  # TEMP
-
-#     def perform_create(self, serializer):
-#         serializer.save(user=self.request.user)
-
+    
+# leads/views.py
 
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
@@ -109,27 +89,37 @@ from permissions.permissions import (
     IsTeamLeadOrAbove,
 )
 from django.core.exceptions import ValidationError
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
+# Create/List View
 class LeadListCreateView(generics.ListCreateAPIView):
     serializer_class = LeadSerializer
     permission_classes = [IsAgentOrAbove]
 
     def get_queryset(self):
-        print("User:", self.request.user)
-        print("Role:", self.request.user.role)
         user = self.request.user
-        if user.role == "agent":
-            return Lead.objects.filter(user=user)
-        elif user.role in ["manager", "admin", "team_lead"]:
+        print("User:", user)
+        print("Role:", user.role)
+
+        if user.role == "admin":
             return Lead.objects.all()
+        elif user.role in ["manager", "team_lead"]:
+            return Lead.objects.filter(team=user.team)
+        elif user.role == "agent":
+            return Lead.objects.filter(user=user)
         return Lead.objects.none()
 
-    
     def perform_create(self, serializer):
-        if not self.request.user.role:
+        user = self.request.user
+        if not user.role:
             raise ValidationError("User has no role assigned.")
-        serializer.save(user=self.request.user)
+        if not user.team:
+            raise ValidationError("User is not part of a team.")
+        serializer.save(user=user, team=user.team)
 
+
+# Detail View (Retrieve/Update/Delete)
 class LeadUpdateRetrieveDestroyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = LeadSerializer
     permission_classes = [IsTeamLeadOrAbove]
@@ -144,21 +134,29 @@ class LeadUpdateRetrieveDestroyView(generics.RetrieveUpdateDestroyAPIView):
         elif user.role in ["manager", "admin", "team_lead"]:
             return Lead.objects.all()
         return Lead.objects.none()
-    
-
-#FRONTEND
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from leads.models import Lead
-from leads.serializers import LeadExtendedSerializer
 
 
+# Optional: List View used for extended table view on frontend (same serializer now)
 class LeadExtendedListView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        leads = Lead.objects.all()
-        serializer = LeadExtendedSerializer(leads, many=True)
+        user = request.user
+        if user.role == "admin":
+            leads = Lead.objects.all()
+        elif user.role in ["manager", "team_lead"]:
+            leads = Lead.objects.filter(team=user.team)
+        elif user.role == "agent":
+            leads = Lead.objects.filter(user=user)
+        else:
+            leads = Lead.objects.none()
+
+        serializer = LeadSerializer(leads, many=True)
         return Response(serializer.data)
+
+
+from leads.serializers import LeadWithContactsSerializer
+
+class LeadWithContactsListView(generics.ListAPIView):
+    queryset = Lead.objects.all().prefetch_related('contacts')
+    serializer_class = LeadWithContactsSerializer

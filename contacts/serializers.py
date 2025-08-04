@@ -1,8 +1,11 @@
+# contacts/serializers.py
 from rest_framework import serializers
-from .models import Contact
+from contacts.models import Contact
+
+# contacts/serializers.py
 
 class ContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contact
-        fields = '__all__'
-        read_on_fields = ['id', 'created_at', 'updated_at', 'created_by']
+        fields = ['id', 'name', 'email', 'phone_number', 'created_at', 'lead']
+        read_only_fields = ['lead', 'created_at']

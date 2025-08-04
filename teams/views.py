@@ -11,3 +11,7 @@ class TeamCreateView(generics.CreateAPIView):
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
 
+class TeamListAPIView(generics.ListAPIView):
+    queryset = Team.objects.all()
+    serializer_class = TeamSerializer
+    permission_classes = [permissions.AllowAny]
