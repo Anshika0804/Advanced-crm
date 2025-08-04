@@ -8,4 +8,4 @@ class ContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contact
         fields = ['id', 'name', 'email', 'phone_number', 'created_at', 'lead']
-        read_only_fields = ['lead', 'created_at']
+        read_only_fields = ['created_at']  
