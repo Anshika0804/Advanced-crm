@@ -33,9 +33,7 @@ class LeadListCreateView(generics.ListCreateAPIView):
         user = self.request.user
         if not user.role:
             raise ValidationError("User has no role assigned.")
-        if not user.team:
-            raise ValidationError("User is not part of a team.")
-        serializer.save(user=user, team=user.team)
+        serializer.save(user=user)  # ✅ Removed team
 
 
 # Detail View (Retrieve/Update/Delete)
