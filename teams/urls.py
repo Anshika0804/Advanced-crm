@@ -1,7 +1,12 @@
 from django.urls import path
-from .views import TeamCreateView, TeamListAPIView
+from .views import (
+    TeamListCreateView,
+    TeamRetrieveUpdateDestroyView,
+    TeamWithUsersListView
+)
 
 urlpatterns = [
-    path('create/', TeamCreateView.as_view(), name='team-create'),
-    path('list/', TeamListAPIView.as_view(), name='team-list'),  # ✅ New endpoint
+    path('', TeamListCreateView.as_view(), name='team-list-create'),
+    path('<int:pk>/', TeamRetrieveUpdateDestroyView.as_view(), name='team-detail'),
+    path('with-users/', TeamWithUsersListView.as_view(), name='team-with-users'),
 ]

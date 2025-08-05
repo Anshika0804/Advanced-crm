@@ -44,3 +44,5 @@ class LeadWithContactsSerializer(LeadSerializer):
 
     class Meta(LeadSerializer.Meta):
         fields = LeadSerializer.Meta.fields + ['contacts']
+
+

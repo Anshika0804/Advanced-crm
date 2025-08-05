@@ -23,7 +23,7 @@ class LeadListCreateView(generics.ListCreateAPIView):
 
         if user.role == "admin":
             return Lead.objects.all()
-        elif user.role in ["manager", "team_lead"]:
+        elif user.role in ["assigned_to", "team_lead"]:
             return Lead.objects.filter(team=user.team)
         elif user.role == "agent":
             return Lead.objects.filter(user=user)
@@ -33,7 +33,7 @@ class LeadListCreateView(generics.ListCreateAPIView):
         user = self.request.user
         if not user.role:
             raise ValidationError("User has no role assigned.")
-        serializer.save(user=user)  # ✅ Removed team
+        serializer.save(user=user)  
 
 
 # Detail View (Retrieve/Update/Delete)

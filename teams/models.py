@@ -1,12 +1,11 @@
-# Create your models here.
 from django.db import models
 from django.conf import settings
 
 class Team(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    manager = models.ForeignKey(
+    assigned_to = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        related_name='managed_teams',
+        related_name='assigned_teams',
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
@@ -19,4 +18,12 @@ class Team(models.Model):
         return self.name
 
     def member_count(self):
-        return self.customuser_set.count()
+        return self.users.count()
+
+    def save(self, *args, **kwargs):
+        # Optional: logic similar to Lead's save
+        if not self.assigned_to and self.users.exists():
+            first_user = self.users.first()
+            if first_user and first_user.role in ['admin', 'manager', 'team_lead']:
+                self.assigned_to = first_user
+        super().save(*args, **kwargs)
