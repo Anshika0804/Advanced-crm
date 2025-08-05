@@ -1,10 +1,11 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from .views import ContactViewSet
+# contacts/urls.py
 
-router = DefaultRouter()
-router.register(r'contacts', ContactViewSet, basename='contacts')
+from django.urls import path
+from leads.views import LeadWithContactsListView 
+from .views import ContactDetailView, ContactCreateView
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path('leads-with-contacts/', LeadWithContactsListView.as_view(), name='contacts-lead-list'),
+    path('<int:pk>/', ContactDetailView.as_view(), name='contact-detail'),
+    path('', ContactCreateView.as_view(), name='contact-create'), 
 ]

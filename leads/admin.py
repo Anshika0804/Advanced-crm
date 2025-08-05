@@ -23,7 +23,7 @@ class AttachmentAdmin(admin.ModelAdmin):
 class ContactInline(admin.TabularInline):
     model = Contact
     extra = 0
-    fields = ('first_name', 'email', 'phone', 'created_at')
+    fields = ('name', 'email', 'phone_number', 'created_at')
     readonly_fields = ('created_at',)
 
     def has_add_permission(self, request, obj=None):
@@ -44,17 +44,6 @@ class LeadAdmin(admin.ModelAdmin):
         return obj.user.name if obj.user else "-"
     get_user_name.short_description = 'Assigned by'
 
-    # def get_queryset(self, request):
-    #     print("Logged in as:", request.user.email)
-    #     print("Groups:", list(request.user.groups.values_list('name', flat=True)))
-    #     qs = super().get_queryset(request)
-    #     if request.user.groups.filter(name='agent').exists():
-    #         return qs.filter(user=request.user)
-    #     elif request.user.groups.filter(name='manager').exists():
-    #         return qs
-    #     elif request.user.groups.filter(name='admin').exists() or request.user.is_superuser:
-    #         return qs
-    #     return qs.none()
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)

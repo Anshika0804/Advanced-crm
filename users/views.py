@@ -13,11 +13,12 @@ from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
 from django.http import JsonResponse
 from django.views import View
-from .models import CustomUser
 from .serializers import UserSerializer
+from .models import CustomUser
 
 
-from .serializers import RegisterSerializer, UserProfileSerializer, UpdateProfileSerializer
+from .serializers import RegisterSerializer, UserProfileSerializer, UpdateProfileSerializer, UserSerializer, UserWithLeadsSerializer
+
 from permissions.permissions import IsManagerOrAdmin
 from rest_framework.permissions import AllowAny
 
@@ -26,6 +27,7 @@ from rest_framework.permissions import AllowAny
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
+    permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -158,20 +160,65 @@ class SendTestEmailView(View):
             return JsonResponse({'error': str(e)}, status=500)
         
 
-
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
+from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model
-from users.serializers import UserSerializer  # make sure this serializer exists
+from .serializers import UserSerializer
+from permissions.permissions import IsTeamLeadOrAbove
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 User = get_user_model()
 
+# Already have this
 class UserListView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         users = User.objects.all()
         serializer = UserSerializer(users, many=True)
+        return Response(serializer.data)
+
+
+#  Retrieve, Update, Delete view
+class UserRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [IsTeamLeadOrAbove]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.role == "admin":
+            return User.objects.all()
+        elif user.role in ["manager", "team_lead"]:
+            return User.objects.filter(team=user.team)
+        elif user.role == "agent":
+            return User.objects.filter(id=user.id)
+        return User.objects.none()
+
+
+# Extended role-based view
+class UserExtendedListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        if user.role == "admin":
+            users = User.objects.all()
+        elif user.role in ["manager", "team_lead"]:
+            users = User.objects.filter(team=user.team)
+        elif user.role == "agent":
+            users = User.objects.filter(id=user.id)
+        else:
+            users = User.objects.none()
+
+        serializer = UserSerializer(users, many=True)
+        return Response(serializer.data)
+
+
+class UserWithLeadsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        users = CustomUser.objects.all()
+        serializer = UserWithLeadsSerializer(users, many=True)
         return Response(serializer.data)

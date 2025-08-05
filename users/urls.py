@@ -8,7 +8,16 @@ from rest_framework_simplejwt.views import (
 
 from .views import (
     RegisterView, UserProfileView, UpdateProfileView, LogoutView,
-    ForgotPasswordView, ResetPasswordView, SendTestEmailView, UserListView
+    ForgotPasswordView, ResetPasswordView, SendTestEmailView, UserListView,
+    UserRetrieveUpdateDestroyView,
+    UserExtendedListView,
+    UserWithLeadsView
+)
+
+from .views import (
+    UserListView,
+    UserRetrieveUpdateDestroyView,
+    UserExtendedListView
 )
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
@@ -25,5 +34,8 @@ urlpatterns = [
     path('send-test-email/', SendTestEmailView.as_view(), name='send-test-email'),
 
     path("list/", UserListView.as_view(), name="user-list"),
+    path('users-with-leads/', UserWithLeadsView.as_view(), name='users-with-leads'),
+    path('<int:pk>/', UserRetrieveUpdateDestroyView.as_view(), name='user-detail'),
+    path('extended/', UserExtendedListView.as_view(), name='user-extended'),
 
 ]

@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from teams.models import Team
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -28,7 +29,13 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     name = models.CharField(max_length=255)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='custom')
-    team = models.ForeignKey('teams.Team', null=True, blank=True, on_delete=models.SET_NULL)
+    team = models.ForeignKey(
+        Team,
+        null=True,
+        blank=True,
+        related_name="users",  # this is needed
+        on_delete=models.SET_NULL
+    )
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)

@@ -6,8 +6,10 @@ class ContactInline(admin.TabularInline):
     model = Contact
     extra = 1
 
+
 class ContactAdmin(admin.ModelAdmin):
-    list_display = ("first_name", "email", "subject", "message", "user")  # adjust fields
+    list_display = ['id', 'name', 'email', 'phone_number', 'lead']
+  
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -20,8 +22,4 @@ class ContactAdmin(admin.ModelAdmin):
         return qs.none()
 
 
-@admin.register(Contact)
-class ContactAdmin(admin.ModelAdmin):
-    list_display = ('id', 'first_name', 'email', 'phone', 'created_at')
-    search_fields = ('first_name', 'last_name', 'email', 'phone')
-    list_filter = ['created_at']
+admin.site.register(Contact, ContactAdmin)

@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from .models import CustomUser
+from leads.models import Lead
+from leads.serializers import LeadSerializer  
 from django.contrib.auth.password_validation import validate_password
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import generics
@@ -42,7 +44,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         return value
 
     def validate_name(self, value):
-        if not re.match(r'^[A-Za-z\s]+$', value):
+        if not re.match(r'^[a-zA-Z0-9._-]+$', value):
             raise serializers.ValidationError("Name should contain only alphabets and spaces.")
         if len(value.strip()) < 3:
             raise serializers.ValidationError("Name must be at least 3 characters long.")
@@ -72,3 +74,15 @@ class UpdateProfileSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Name must be at least 3 characters long.")
         return value
         
+
+
+class UserWithLeadsSerializer(serializers.ModelSerializer):
+    leads = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'email', 'name', 'role', 'leads']
+
+    def get_leads(self, user):
+        leads = Lead.objects.filter(user=user)
+        return LeadSerializer(leads, many=True).data
