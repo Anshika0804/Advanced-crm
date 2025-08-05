@@ -27,6 +27,7 @@ from rest_framework.permissions import AllowAny
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
+    permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -179,7 +180,7 @@ class UserListView(APIView):
         return Response(serializer.data)
 
 
-# ✅ NEW: Retrieve, Update, Delete view
+#  Retrieve, Update, Delete view
 class UserRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer
     permission_classes = [IsTeamLeadOrAbove]
@@ -195,7 +196,7 @@ class UserRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         return User.objects.none()
 
 
-# ✅ NEW: Extended role-based view
+# Extended role-based view
 class UserExtendedListView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -212,7 +213,6 @@ class UserExtendedListView(APIView):
 
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
-
 
 
 class UserWithLeadsView(APIView):

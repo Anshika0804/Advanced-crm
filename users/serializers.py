@@ -44,7 +44,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         return value
 
     def validate_name(self, value):
-        if not re.match(r'^[A-Za-z\s]+$', value):
+        if not re.match(r'^[a-zA-Z0-9._-]+$', value):
             raise serializers.ValidationError("Name should contain only alphabets and spaces.")
         if len(value.strip()) < 3:
             raise serializers.ValidationError("Name must be at least 3 characters long.")
