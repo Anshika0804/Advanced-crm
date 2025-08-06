@@ -15,7 +15,6 @@ class TeamListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-
         if user.role == "admin":
             return Team.objects.all()
         elif user.role in ["manager", "team_lead"]:
@@ -25,10 +24,13 @@ class TeamListCreateView(generics.ListCreateAPIView):
         return Team.objects.none()
 
     def perform_create(self, serializer):
-        user = self.request.user
-        if not user.role:
+        if not self.request.user.role:
             raise ValidationError("User has no role assigned.")
-        serializer.save(assigned_to=user)
+
+        if not serializer.validated_data.get("assigned_to"):
+            serializer.save(assigned_to=self.request.user)
+        else:
+            serializer.save()
 
 
 # Retrieve/Update/Delete View

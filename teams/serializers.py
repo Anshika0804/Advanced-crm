@@ -31,3 +31,5 @@ class TeamWithUsersSerializer(TeamSerializer):
 
     class Meta(TeamSerializer.Meta):
         fields = TeamSerializer.Meta.fields + ['users']
+
+
