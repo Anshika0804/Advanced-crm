@@ -83,6 +83,9 @@ class UserWithLeadsSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ['id', 'email', 'name', 'role', 'leads']
 
+    # def get_leads(self, user):
+    #     leads = Lead.objects.filter(user=user)
+    #     return LeadSerializer(leads, many=True).data
     def get_leads(self, user):
-        leads = Lead.objects.filter(user=user)
+        leads = Lead.objects.filter(assigned_to=user)
         return LeadSerializer(leads, many=True).data
