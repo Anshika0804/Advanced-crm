@@ -88,18 +88,18 @@ class LogoutView(APIView):
         except TokenError:
             return Response({"error": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
 
-class ProtectedRoleView(APIView):
-    permission_classes = [IsAuthenticated, IsManagerOrAdmin]
+# class ProtectedRoleView(APIView):
+#     permission_classes = [IsAuthenticated, IsManagerOrAdmin]
 
-    def get(self, request):
-        return Response({"message": f"Hello {request.user.role.title()}!"})
+#     def get(self, request):
+#         return Response({"message": f"Hello {request.user.role.title()}!"})
 
 
 class ForgotPasswordView(APIView):
     permission_classes = [AllowAny]
     def post(self, request):
-        # email = request.data.get("email")
-        email = "anshikarai0804@gmail.com"
+        email = request.data.get("email")
+        # email = "anshikarai0804@gmail.com"
         if not email :
             return Response({"error": "Email is required."}, status=status.HTTP_400_BAD_REQUEST)
         
@@ -151,13 +151,24 @@ class SendTestEmailView(View):
         subject = 'Test Email from Django'
         message = 'This is a test email sent from your Django project using Gmail SMTP.'
         from_email = 'anshikacoder10@gmail.com'  
-        recipient_list = ['anshikarai0804@gmail.com']  
+        recipient_list = list(User.objects.values_list('email', flat=True))
+
+        if not recipient_list:
+            return JsonResponse({'error': 'No registered users with email addresses'}, status=400)
 
         try:
             send_mail(subject, message, from_email, recipient_list)
-            return JsonResponse({'success': 'Email sent successfully'})
+            return JsonResponse({'success': 'Email sent successfully to all users'})
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
+
+        # recipient_list = ['anshikarai0804@gmail.com']  
+
+        # try:
+        #     send_mail(subject, message, from_email, recipient_list)
+        #     return JsonResponse({'success': 'Email sent successfully'})
+        # except Exception as e:
+        #     return JsonResponse({'error': str(e)}, status=500)
         
 
 from rest_framework import generics
@@ -170,7 +181,6 @@ from rest_framework.response import Response
 
 User = get_user_model()
 
-# Already have this
 class UserListView(APIView):
     permission_classes = [IsAuthenticated]
 
