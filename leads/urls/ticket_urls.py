@@ -1,10 +1,10 @@
-# from django.urls import path, include
-# from rest_framework.routers import DefaultRouter
-# from leads.views import TicketViewSet
+from django.urls import path
+from leads.views.ticket_views import (
+    TicketListCreateAPIView,
+    TicketRetrieveUpdateDestroyAPIView,
+)
 
-# router = DefaultRouter()
-# router.register(r'tickets', TicketViewSet)
-
-# urlpatterns = [
-#     path('', include(router.urls)),
-# ]
+urlpatterns = [
+    path('tickets/', TicketListCreateAPIView.as_view(), name='ticket-list-create'),
+    path('tickets/<int:pk>/', TicketRetrieveUpdateDestroyAPIView.as_view(), name='ticket-detail'),
+]

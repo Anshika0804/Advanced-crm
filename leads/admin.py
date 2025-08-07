@@ -13,7 +13,7 @@ class CampaignAdmin(admin.ModelAdmin):
 
 @admin.register(Note)
 class NoteAdmin(admin.ModelAdmin):
-    list_display = ('id', 'content', 'author')
+    list_display = ('id', 'content', 'created_by')
 
 @admin.register(Attachment)
 class AttachmentAdmin(admin.ModelAdmin):
