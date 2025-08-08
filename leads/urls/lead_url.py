@@ -14,4 +14,5 @@ urlpatterns = [
     path("", include("leads.urls.ticket_urls")),
     path("", include("leads.urls.note_urls")),
     path("", include("leads.urls.attachment_urls")),
+    path("", include("leads.urls.campaign_urls")),
 ]

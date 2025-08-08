@@ -1,10 +1,8 @@
-# from django.urls import path, include
-# from rest_framework.routers import DefaultRouter
-# from leads.views import CampaignViewSet
+from django.urls import path
+from leads.views.campaign_views import CampaignListCreateView, CampaignRetrieveUpdateDestroyView
 
-# router = DefaultRouter()
-# router.register(r'campaigns', CampaignViewSet)
+urlpatterns = [
+    path('campaigns/', CampaignListCreateView.as_view(), name='campaign-list-create'),
+    path('campaigns/<int:pk>/', CampaignRetrieveUpdateDestroyView.as_view(), name='campaign-detail-update-delete'),
+]
 
-# urlpatterns = [
-#     path('', include(router.urls)),
-# ]
