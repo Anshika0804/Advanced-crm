@@ -3,7 +3,7 @@ from users.models import CustomUser
 
 class Attachment(models.Model):
     file = models.FileField(upload_to='attachments/')
-    # uploaded_by = models.ForeignKey(CustomUser, null=True, blank=True,  on_delete=models.CASCADE)
+    uploaded_by = models.ForeignKey(CustomUser, null=True, blank=True,  on_delete=models.CASCADE)
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     lead = models.ForeignKey("leads.Lead", on_delete=models.CASCADE, null=True, blank=True)

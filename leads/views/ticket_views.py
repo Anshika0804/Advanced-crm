@@ -2,7 +2,6 @@
 from rest_framework import generics
 from leads.models import Ticket
 from leads.serializers import TicketSerializer
-from rest_framework.permissions import IsAuthenticated
 
 class TicketListCreateAPIView(generics.ListCreateAPIView):
     queryset = Ticket.objects.all()

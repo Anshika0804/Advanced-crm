@@ -12,4 +12,6 @@ urlpatterns = [
     path('dropdown/', LeadDropdownView.as_view(), name='lead-dropdown'),
 
     path("", include("leads.urls.ticket_urls")),
+    path("", include("leads.urls.note_urls")),
+    path("", include("leads.urls.attachment_urls")),
 ]

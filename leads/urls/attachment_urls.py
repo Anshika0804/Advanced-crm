@@ -1,10 +1,6 @@
-# from django.urls import path, include
-# from rest_framework.routers import DefaultRouter
-# from leads.views import AttachmentViewSet
+from django.urls import path
+from leads.views import TicketAttachmentsListView
 
-# router = DefaultRouter()
-# router.register(r'attachments', AttachmentViewSet)
-
-# urlpatterns = [
-#     path('', include(router.urls)),
-# ]
+urlpatterns = [
+    path('tickets/<int:ticket_id>/attachments/', TicketAttachmentsListView.as_view(), name='ticket-attachments'),
+]

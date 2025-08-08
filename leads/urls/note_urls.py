@@ -1,10 +1,14 @@
-# from django.urls import path, include
-# from rest_framework.routers import DefaultRouter
-# from leads.views import NoteViewSet
+# leads/urls/note_urls.py
+from django.urls import path
+from leads.views.note_views import (
+    TicketNotesListView,
+    NoteRetrieveUpdateDestroyView
+)
 
-# router = DefaultRouter()
-# router.register(r'notes', NoteViewSet)
+urlpatterns = [
+    # List all notes for a given lead, or create a new note
+    path('notes/', TicketNotesListView.as_view(), name='note-list-create'),
 
-# urlpatterns = [
-#     path('', include(router.urls)),
-# ]
+    # Retrieve, update, or delete a specific note
+    path('notes/<int:pk>/', NoteRetrieveUpdateDestroyView.as_view(), name='note-detail-update-delete'),
+]

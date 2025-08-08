@@ -2,7 +2,7 @@ from django.db import models
 from users.models import CustomUser
 
 class Note(models.Model):
-    content = models.TextField()
+    description = models.TextField()
     created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -11,3 +11,5 @@ class Note(models.Model):
 
     def __str__(self):
         return f"Note by {self.created_by.name} on {self.created_at}"
+
+
