@@ -10,4 +10,4 @@ class Attachment(models.Model):
     ticket = models.ForeignKey("leads.Ticket", on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
-        return self.file.name
+        return f"Attachment by {self.uploaded_by.name} on {self.uploaded_at}"
