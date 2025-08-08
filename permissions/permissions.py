@@ -31,7 +31,7 @@ class IsTeamLeadOrAbove(BasePermission):
 
 class IsAgentOrAbove(BasePermission):
     def has_permission(self, request, view):
-        allowed_roles = ["agent", "manager", "admin", "team_lead"]  # add "custom" here
+        allowed_roles = ["custom", "manager", "admin", "team_lead"] 
         return (
             request.user and 
             request.user.is_authenticated and 

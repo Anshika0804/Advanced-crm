@@ -18,6 +18,10 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
+from django.conf import settings
+from django.conf.urls.static import static
+
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/users/", include("users.urls")),       
@@ -27,4 +31,17 @@ urlpatterns = [
 
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+]
+
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+from .views import leads_count, users_count, teams_count
+
+urlpatterns += [
+    path('api/leads/count/', leads_count),
+    path('api/users/count/', users_count),
+    path('api/teams/count/', teams_count),
 ]

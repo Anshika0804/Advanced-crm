@@ -1,10 +1,11 @@
-# from django.urls import path, include
-# from rest_framework.routers import DefaultRouter
-# from leads.views import AttachmentViewSet
+from django.urls import path
+from leads.views.attachment_views import (TicketAttachmentsListView, AttachmentRetrieveUpdateDestroyView
+)
 
-# router = DefaultRouter()
-# router.register(r'attachments', AttachmentViewSet)
+urlpatterns = [
+    # List all notes for a given lead, or upload a new attachement
+    path('attachment/', TicketAttachmentsListView.as_view(), name='attachment-list-create'),
 
-# urlpatterns = [
-#     path('', include(router.urls)),
-# ]
+    # Retrieve, update, or delete a specific attachment
+    path('attachment/<int:pk>/', AttachmentRetrieveUpdateDestroyView.as_view(), name='attachment-detail-update-delete'),
+]
