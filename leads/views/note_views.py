@@ -2,11 +2,16 @@ from rest_framework import generics
 from leads.models import Note, Ticket
 from leads.serializers import NoteSerializer
 from rest_framework.exceptions import ValidationError
+from permissions.permissions import (
+    IsAgentOrAbove,
+    IsTeamLeadOrAbove,
+)
 
 
 # List + Create notes for a specific ticket
 class TicketNotesListView(generics.ListCreateAPIView):
     serializer_class = NoteSerializer
+    permission_classes = [IsTeamLeadOrAbove]
 
     def get_queryset(self):
         ticket_id = self.request.query_params.get('ticket_id')

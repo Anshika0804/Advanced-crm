@@ -36,3 +36,12 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+from .views import leads_count, users_count, teams_count
+
+urlpatterns += [
+    path('api/leads/count/', leads_count),
+    path('api/users/count/', users_count),
+    path('api/teams/count/', teams_count),
+]
