@@ -88,13 +88,6 @@ class LogoutView(APIView):
         except TokenError:
             return Response({"error": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
 
-# class ProtectedRoleView(APIView):
-#     permission_classes = [IsAuthenticated, IsManagerOrAdmin]
-
-#     def get(self, request):
-#         return Response({"message": f"Hello {request.user.role.title()}!"})
-
-
 class ForgotPasswordView(APIView):
     permission_classes = [AllowAny]
     def post(self, request):
