@@ -1,5 +1,6 @@
 absl-py==2.0.0
 altair==5.5.0
+amqp==5.3.1
 annotated-types==0.5.0
 antlr4-python3-runtime==4.9.3
 anyio==3.7.0
@@ -10,6 +11,7 @@ attrs==23.1.0
 backcall==0.2.0
 beautifulsoup4==4.12.2
 better-profanity==0.7.0
+billiard==4.2.1
 black==23.11.0
 blinker==1.9.0
 blis==0.7.9
@@ -18,12 +20,16 @@ botocore==1.29.111
 CacheControl==0.13.1
 cachetools==5.3.1
 catalogue==2.0.8
+celery==5.5.3
 certifi==2023.5.7
 cffi==1.15.1
 chardet==3.0.4
 charset-normalizer==2.1.1
 chromedriver-autoinstaller==0.6.2
 click==8.1.3
+click-didyoumean==0.3.1
+click-plugins==1.1.1.2
+click-repl==0.3.0
 cloudpickle==3.0.0
 comm==0.2.1
 confection==0.0.4
@@ -37,7 +43,11 @@ detectron2 @ git+https://github.com/facebookresearch/detectron2.git@a0e22dbfa791
 distlib==0.3.7
 Django==5.2.4
 django-cors-headers==4.7.0
+django-extensions==4.1
+django-redis==6.0.0
 django-tailwind==4.0.1
+djangorestframework==3.16.1
+djangorestframework_simplejwt==5.5.1
 exceptiongroup==1.1.2
 executing==1.2.0
 fastapi==0.100.0
@@ -86,6 +96,7 @@ jsonschema-specifications==2024.10.1
 jupyter_client==8.6.0
 jupyter_core==5.7.1
 kiwisolver==1.4.5
+kombu==5.5.4
 langcodes==3.3.0
 langdetect==1.0.9
 Markdown==3.5.1
@@ -145,6 +156,7 @@ python-dotenv==1.0.0
 pytz==2025.1
 PyYAML==6.0
 pyzmq==25.1.2
+redis==6.4.0
 referencing==0.36.2
 regex==2023.6.3
 requests==2.31.0
@@ -190,11 +202,12 @@ trio==0.22.2
 trio-websocket==0.10.3
 typer==0.7.0
 typing_extensions==4.12.2
-tzdata==2025.1
+tzdata==2025.2
 undetected-chromedriver==3.5.1
 uritemplate==4.1.1
 urllib3==1.26.16
 uvicorn==0.22.0
+vine==5.1.0
 virtualenv==20.24.2
 virtualenv-clone==0.5.7
 wasabi==1.1.2
