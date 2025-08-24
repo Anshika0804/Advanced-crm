@@ -15,6 +15,7 @@ from datetime import timedelta
 import os
 from dotenv import load_dotenv
 import redis 
+from celery.schedules import crontab
 
 load_dotenv()
 
@@ -48,6 +49,8 @@ INSTALLED_APPS = [
     "teams",
     "leads",
     "contacts",
+    "notifications",
+    "channels",
     "rest_framework",
     "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
@@ -109,7 +112,17 @@ CORS_ALLOWED_ORIGINS = [
 
 
 WSGI_APPLICATION = "crm_project.wsgi.application"
+ASGI_APPLICATION = "crm_project.asgi.application"
 
+# Temporary in-memory layer (can use Redis later in prod)
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+        # "CONFIG": {
+        #     "hosts": [("127.0.0.1", 6379)],  # Redis running locally
+        # },
+    }
+}
 
 
 # Database
@@ -204,10 +217,28 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
 CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Redis running locally on default port
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0' # Store task result
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Asia/Kolkata'  # our timezone
+
+CELERY_BEAT_SCHEDULE = {
+    'update-leads-count-every-three-minutes': {
+        'task': 'leads.tasks.update_leads_count',
+        'schedule': crontab(minute='*/3')
+    },
+
+    'update-users-count-every-three-minutes': {
+        'task': 'leads.tasks.update_users_count',
+        'schedule': crontab(minute='*/3')
+    },
+
+    'update-teams-count-every-three-minutes': {
+        'task': 'leads.tasks.update_teams_count',
+        'schedule': crontab(minute='*/3')
+    }
+}
 
 REDIS_HOST = 'localhost'
 REDIS_PORT = '6379'
