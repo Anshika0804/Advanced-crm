@@ -22,6 +22,9 @@ from .serializers import RegisterSerializer, UserProfileSerializer, UpdateProfil
 from permissions.permissions import IsManagerOrAdmin
 from rest_framework.permissions import AllowAny
 
+from django.conf import settings
+from leads.tasks import update_users_count
+
 
 # Create your views here.
 
@@ -33,6 +36,7 @@ class RegisterView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
+        update_users_count() # synchronous
 
         # Assign role if provided
         role = request.data.get('role')
@@ -197,6 +201,12 @@ class UserRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         elif user.role == "agent":
             return User.objects.filter(id=user.id)
         return User.objects.none()
+    
+    def perform_destroy(self, instance):
+        # Delete the user
+        instance.delete()
+        # Update Redis instantly
+        update_users_count() 
 
 
 # Extended role-based view

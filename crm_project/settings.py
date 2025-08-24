@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     "teams",
     "leads",
     "contacts",
+    "notifications",
+    "channels",
     "rest_framework",
     "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
@@ -110,7 +112,17 @@ CORS_ALLOWED_ORIGINS = [
 
 
 WSGI_APPLICATION = "crm_project.wsgi.application"
+ASGI_APPLICATION = "crm_project.asgi.application"
 
+# Temporary in-memory layer (can use Redis later in prod)
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+        # "CONFIG": {
+        #     "hosts": [("127.0.0.1", 6379)],  # Redis running locally
+        # },
+    }
+}
 
 
 # Database

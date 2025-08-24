@@ -28,6 +28,8 @@ urlpatterns = [
     path("api/leads/", include("leads.urls")),       
     path("api/teams/", include("teams.urls")),   
     path("api/contacts/", include("contacts.urls")),
+    path("notifications/", include("notifications.urls")),
+
 
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
