@@ -48,7 +48,7 @@ class LeadListCreateView(generics.ListCreateAPIView):
 
         #Trigger notification if assigned_to exists
         if lead.assigned_to:
-            message = f"A new lead '{lead.name}' has been assigned to you."
+            message = f"A new lead {lead.name} has been assigned to you."
             Notification.objects.create(user=lead.assigned_to, lead=lead, message=message)
 
             #Send Websocket Notification
