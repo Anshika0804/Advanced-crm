@@ -390,8 +390,9 @@ TEMPLATES = [
 
 # CORS
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
+    "https://acrm-frontend.netlify.app",
 ]
+
 CORS_ALLOW_ALL_ORIGINS = False
 
 WSGI_APPLICATION = "crm_project.wsgi.application"
