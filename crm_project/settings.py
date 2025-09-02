@@ -406,7 +406,7 @@ CHANNEL_LAYERS = {
 }
 
 # DATABASE
-if os.environ.get("RENDER"):
+if os.environ.get("RENDER_EXTERNAL_HOSTNAME"):
     DATABASES = {
         'default': dj_database_url.config(
             default=os.environ.get("DATABASE_URL"),

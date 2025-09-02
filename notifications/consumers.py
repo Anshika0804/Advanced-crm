@@ -1,7 +1,5 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
-
-
 class NotificationConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         # If you use AuthMiddlewareStack, user is automatically added to scope
