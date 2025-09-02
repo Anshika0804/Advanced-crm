@@ -6,6 +6,7 @@ from leads.models import Lead
 from users.models import CustomUser
 from teams.models import Team
 import redis
+from django_redis import get_redis_connection
 
 # @api_view(['GET'])
 # @permission_classes([IsAuthenticated])
@@ -29,7 +30,7 @@ import redis
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def leads_count(request):
-    redis_client = redis.from_url(settings.REDIS_URL)
+    redis_client = get_redis_connection("default")
     cached_count = redis_client.get("leadsCount")
 
     return Response({'count': int(cached_count) if cached_count else 0})
@@ -38,7 +39,7 @@ def leads_count(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def users_count(request):
-    redis_client = redis.from_url(settings.REDIS_URL)
+    redis_client = get_redis_connection("default")
     cached_count = redis_client.get("usersCount")
 
     return Response({'count': int(cached_count) if cached_count else 0})
@@ -46,7 +47,7 @@ def users_count(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def teams_count(request):
-    redis_client = redis.from_url(settings.REDIS_URL)
+    redis_client = get_redis_connection("default")                                                 
     cached_count = redis_client.get("teamsCount")
 
     return Response({'count': int(cached_count) if cached_count else 0})
