@@ -298,6 +298,7 @@ from pathlib import Path
 from datetime import timedelta
 import os
 import redis
+from urllib.parse import urlparse
 from celery.schedules import crontab
 import dj_database_url
 from dotenv import load_dotenv
