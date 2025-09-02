@@ -28,12 +28,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-1l^2^t61u5q$x%7u-e0@hx#_b@*kw8ulk1v%e8t*y2s#$bwuj^"
+# SECRET_KEY = "django-insecure-1l^2^t61u5q$x%7u-e0@hx#_b@*kw8ulk1v%e8t*y2s#$bwuj^"
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# # SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG = True
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = []
+
+SECRET_KEY = os.getenv("SECRET_KEY")
+DEBUG = False
+ALLOWED_HOSTS = ["*"]
+# ALLOWED_HOSTS = [os.environ.get("RENDER_EXTERNAL_HOSTNAME")]
 
 
 # Application definition
@@ -89,6 +94,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -115,10 +121,17 @@ TEMPLATES = [
     },
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",
+# ]
+
 CORS_ALLOWED_ORIGINS = [
+    # "https://your-crm-frontend.netlify.app"
     "http://localhost:3000",
 ]
+CORS_ALLOW_ALL_ORIGINS = False
+
 
 
 WSGI_APPLICATION = "crm_project.wsgi.application"
@@ -138,23 +151,23 @@ CHANNEL_LAYERS = {
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
-
 # DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'advanced_crmdb',
-#         'USER': 'crmadmin',
-#         'PASSWORD': 'crm@12345',
-#         'HOST': 'localhost',
-#         'PORT': '5432',
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'advanced_crm_db',
+        'USER': 'crm_user',
+        'PASSWORD': 'Anshika20',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
 
 
 # Password validation
@@ -195,6 +208,9 @@ STATIC_URL = "static/"
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 REDIS_URL = os.getenv("REDIS_URL", "redis://127.0.0.1:6379/1")
 
@@ -226,8 +242,10 @@ EMAIL_HOST_PASSWORD = os.getenv("PASS_KEY")
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
-CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Redis running locally on default port
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0' # Store task result
+# CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Redis running locally on default port
+# CELERY_RESULT_BACKEND = 'redis://localhost:6379/0' # Store task result
+CELERY_BROKER_URL = os.getenv("REDIS_URL")
+CELERY_RESULT_BACKEND = os.getenv("REDIS_URL")
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
