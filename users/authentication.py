@@ -2,6 +2,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 from django.conf import settings
 import json
+import redis
 
 class RedisJWTAuthentication(JWTAuthentication):
     def authenticate(self, request):
@@ -10,7 +11,7 @@ class RedisJWTAuthentication(JWTAuthentication):
             return None
         
         user, token = validated_data
-        redis_client = settings.REDIS_CLIENT
+        redis_client = redis.from_url(settings.REDIS_URL)
 
         # Check Redis for the stored token
         redis_key = f"user:{user.id}:tokens"

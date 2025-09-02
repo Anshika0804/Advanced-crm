@@ -24,10 +24,12 @@ import redis
 
 #     return Response({'count': count})
 
+
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def leads_count(request):
-    redis_client = settings.REDIS_CLIENT
+    redis_client = redis.from_url(settings.REDIS_URL)
     cached_count = redis_client.get("leadsCount")
 
     return Response({'count': int(cached_count) if cached_count else 0})
@@ -36,7 +38,7 @@ def leads_count(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def users_count(request):
-    redis_client = settings.REDIS_CLIENT
+    redis_client = redis.from_url(settings.REDIS_URL)
     cached_count = redis_client.get("usersCount")
 
     return Response({'count': int(cached_count) if cached_count else 0})
@@ -44,7 +46,7 @@ def users_count(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def teams_count(request):
-    redis_client = settings.REDIS_CLIENT
+    redis_client = redis.from_url(settings.REDIS_URL)
     cached_count = redis_client.get("teamsCount")
 
     return Response({'count': int(cached_count) if cached_count else 0})
