@@ -308,8 +308,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY
 SECRET_KEY = os.getenv("SECRET_KEY")
-DEBUG = os.getenv("DEBUG", "False") == "True"
-ALLOWED_HOSTS = ["*"]  # can restrict to Render hostname
+DEBUG = False
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "advanced-crm.onrender.com"]
 
 # APPLICATIONS
 INSTALLED_APPS = [
