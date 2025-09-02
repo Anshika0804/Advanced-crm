@@ -47,6 +47,7 @@ debugpy==1.8.0
 decorator==5.1.1
 detectron2 @ git+https://github.com/facebookresearch/detectron2.git@a0e22dbfa791e6235e4f196d5ce25e754d02be31
 distlib==0.3.7
+dj-database-url==3.0.1
 Django==5.2.4
 django-cors-headers==4.7.0
 django-extensions==4.1
@@ -78,6 +79,7 @@ googleapis-common-protos==1.59.1
 googletrans==4.0.0rc1
 grpcio==1.54.2
 grpcio-status==1.54.2
+gunicorn==23.0.0
 h11==0.9.0
 h2==3.2.0
 hpack==3.0.0
@@ -227,6 +229,7 @@ wcwidth==0.2.6
 websockets==11.0.3
 Werkzeug==3.0.1
 wget==3.2
+whitenoise==6.9.0
 wsproto==1.2.0
 yacs==0.1.8
 zope.interface==7.2
