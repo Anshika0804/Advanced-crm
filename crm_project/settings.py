@@ -298,6 +298,7 @@ from pathlib import Path
 from datetime import timedelta
 import os
 import redis
+from urllib.parse import urlparse
 from celery.schedules import crontab
 import dj_database_url
 from dotenv import load_dotenv
@@ -308,8 +309,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY
 SECRET_KEY = os.getenv("SECRET_KEY")
-DEBUG = os.getenv("DEBUG", "False") == "True"
-ALLOWED_HOSTS = ["*"]  # can restrict to Render hostname
+DEBUG = False
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "advanced-crm.onrender.com"]
 
 # APPLICATIONS
 INSTALLED_APPS = [
@@ -390,8 +391,9 @@ TEMPLATES = [
 
 # CORS
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
+    "https://acrm-frontend.netlify.app",
 ]
+
 CORS_ALLOW_ALL_ORIGINS = False
 
 WSGI_APPLICATION = "crm_project.wsgi.application"
@@ -404,7 +406,7 @@ CHANNEL_LAYERS = {
 }
 
 # DATABASE
-if os.environ.get("RENDER"):
+if os.environ.get("RENDER_EXTERNAL_HOSTNAME"):
     DATABASES = {
         'default': dj_database_url.config(
             default=os.environ.get("DATABASE_URL"),
