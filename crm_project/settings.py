@@ -152,25 +152,25 @@ CHANNEL_LAYERS = {
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'advanced_crm_db',
-#         'USER': 'crm_user',
-#         'PASSWORD': 'Anshika20',
-#         'HOST': 'localhost',
-#         'PORT': '5432',
-#     }
-# }
-
-
-DATABASES = {
-    'default': dj_database_url.config(
-        default='postgres://crm_user:Anshika20@localhost:5432/advanced_crm_db',
-        conn_max_age=600,
-        conn_health_checks=True
-    )
-}
+if os.environ.get("RENDER"):  # On Render
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.environ.get("DATABASE_URL"),
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
+    }
+else:  # Local development
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'advanced_crm_db',
+            'USER': 'crm_user',
+            'PASSWORD': 'Anshika20',
+            'HOST': 'localhost',
+            'PORT': '5432',
+        }
+    }
 
 
 # Password validation
