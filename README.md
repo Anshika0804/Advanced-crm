@@ -68,7 +68,7 @@ This project includes advanced features like asynchronous task processing with *
 
 ### 1️⃣ Clone the Repository
 ```bash
-git clone https://github.com/your-username/crm-project.git
+git clone https://github.com/Anshika0804/crm-project.git
 cd crm-project
 ```
 
